@@ -1,4 +1,4 @@
-package main
+package services
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 )
 
 type MemoryStats struct {
-	total     uint64
-	free      uint64
-	available uint64
+	Total     uint64
+	Free      uint64
+	Available uint64
 }
 
 func GetMemoryStats() (MemoryStats, error) {
@@ -35,15 +35,15 @@ func GetMemoryStats() (MemoryStats, error) {
 
 		switch key {
 		case "MemTotal:":
-			stats.total = value
+			stats.Total = value
 		case "MemFree:":
-			stats.free = value
+			stats.Free = value
 		case "MemAvailable:":
-			stats.available = value
+			stats.Available = value
 		}
 	}
 
-	if stats.total == 0 {
+	if stats.Total == 0 {
 		return MemoryStats{}, fmt.Errorf("failed to parse total memory")
 	}
 
@@ -51,6 +51,6 @@ func GetMemoryStats() (MemoryStats, error) {
 }
 
 func CalculateRAMUsage(stats MemoryStats) float64 {
-	usedMemory := stats.total - stats.available
-	return float64(usedMemory) / float64(stats.total) * 100.0
+	usedMemory := stats.Total - stats.Available
+	return float64(usedMemory) / float64(stats.Total) * 100.0
 }

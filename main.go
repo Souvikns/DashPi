@@ -1,12 +1,15 @@
 package main
 
 import (
-	"encoding/json"
-	"github.com/gofiber/fiber/v2"
-	"github.com/zcalusic/sysinfo"
 	"log"
 	"os/user"
+
+	"github.com/Souvikns/DashPi/controller"
+	"github.com/gofiber/fiber/v2"
+	"github.com/zcalusic/sysinfo"
 )
+
+
 
 func main() {
 	current, err := user.Current()
@@ -25,13 +28,7 @@ func main() {
 	app := fiber.New()
 
 	app.Static("/", "./web/dist")
-	app.Get("/api/sysinfo", func(ctx *fiber.Ctx) error {
-		u, err := json.MarshalIndent(&si, "", " ")
-		if err != nil {
-			log.Fatal(err)
-		}
-		return ctx.SendString(string(u))
-	})
+	app.Get("/api/sysinfo", controller.GetSystemInfo)
 
 	app.Listen(":8080")
 }

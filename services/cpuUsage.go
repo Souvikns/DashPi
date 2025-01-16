@@ -1,10 +1,11 @@
-package main
+package services
 
 import (
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type CPUStats struct {
@@ -69,4 +70,18 @@ func CalculateCPULoad(prev, curr CPUStats) float64 {
 	}
 
 	return float64(deltaTotal-deltaIdle) / float64(deltaTotal) * 100.0
+}
+
+func CalcCPULoad() <-chan float64 {
+	prev, _ := GetCPUStats()
+	r := make(chan float64)
+
+	go func() {
+		defer close(r)
+		time.Sleep(time.Second / 2)
+		current, _ := GetCPUStats()
+		load := CalculateCPULoad(prev, current)
+		r <- load
+	}()
+	return r
 }
